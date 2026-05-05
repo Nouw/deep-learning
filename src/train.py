@@ -26,7 +26,7 @@ def train_model(
     best_val_loss = float("inf")
 
     for epoch in range(epochs):
-        model.train_mode()
+        model.train()
         batch_train_losses = []
         for X_batch, y_batch in train_loader:
             optimizer.zero_grad()
