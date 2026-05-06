@@ -14,7 +14,8 @@ def train_model(
         epochs=100,
         learning_rate=0.001,
         plot_loss=False,
-        plot_path=None
+        plot_path=None,
+        model_name=""
 ):
     criterion = nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
@@ -63,12 +64,13 @@ def train_model(
 
         plt.xlabel("Epoch")
         plt.ylabel("Validation MSE Loss")
-        plt.title("Model Comparison — Validation Loss Over Training")
+        plt.title(f"Validation Loss Over Training ({model_name})")
         plt.legend()
         plt.tight_layout()
-        plt.show()
 
         if plot_path:
             plt.savefig(plot_path)
+
+        plt.show()
 
     return best_model_state

@@ -2,16 +2,17 @@ from torch.utils.data import Dataset, DataLoader
 import torch
 
 class LaserDataset(Dataset):
-    def __init__(self, series, window_size):
+    def __init__(self, series, window_size, k=1):
         self.window_size = window_size
+        self.k = k
         series_tensor = torch.tensor(series, dtype=torch.float32)
 
         X = []
         y = []
 
-        for i in range(len(series_tensor) - window_size):
+        for i in range(len(series_tensor) - window_size - k + 1):
             X.append(series_tensor[i:i+window_size])
-            y.append(series_tensor[i+window_size])
+            y.append(series_tensor[i+window_size:i+window_size+k])
 
             self.X = torch.stack(X)
             self.y = torch.stack(y)

@@ -32,4 +32,4 @@ class HybridCNNLSTM(nn.Module):
         x = x.permute(0, 2, 1)
         _, (h, _) = self.lstm(x)
         out = self.fc(h[-1])
-        return out.squeeze(-1)
+        return out

@@ -4,7 +4,9 @@ import logging
 import numpy as np
 import matplotlib.pyplot as plt
 from src.models.cnn_lstm import HybridCNNLSTM
+from src.models.lstm import LSTMNet
 from src.models.net import Net
+from src.models.recurrent_neural_network import RNNModel
 from src.read_data import load_dataset, split_dataset
 from src.test import test_model
 from src.train import train_model
@@ -13,14 +15,27 @@ import torch
 
 logging.basicConfig(level=logging.DEBUG)
 
+models = {
+    "RNN": RNNModel(20, 64, 3),
+    "Felix": Net(),
+    "CNN-LSTM": HybridCNNLSTM(
+        20,
+        num_filters=64,
+        kernel_size=5,
+        hidden_size=256,
+        num_layers=1,
+        dropout=0.2,
+    ),
+    "LSTM": LSTMNet(
+        hidden_size=256,
+        num_layers=4,
+        dropout=0.1,
+    )
+}
+
 def train_mode():
     dataset, scaler = load_dataset('Xtrain.mat', 20)
-    train_dataset, val_dataset, test_dataset = split_dataset(dataset)
-
-    models = {
-        "Felix": Net(),
-        "CNN-LSTM": HybridCNNLSTM(20, num_layers=2)
-    }
+    train_dataset, val_dataset, test_dataset = split_dataset(dataset, train_size=0.8, val_size=0.2, test_size=0.0)
 
     for key, model in models.items():
         folder = f"out/{key}/"
@@ -28,18 +43,13 @@ def train_mode():
         if not os.path.exists(folder):
             os.mkdir(folder)
 
-        best_model = train_model(model, train_dataset, val_dataset, plot_loss=True, plot_path=f"{folder}/loss_graph.png")
+        best_model = train_model(model, train_dataset, val_dataset, epochs=200, model_name=key, plot_loss=True, plot_path=f"{folder}/loss_graph.png")
 
         torch.save(best_model, f"out/{key}/weights.pt")
 
 
 def test_mode():
-    models = {
-        "Felix": Net(),
-        "CNN-LSTM": HybridCNNLSTM(20, num_layers=2)
-    }
-
-    dataset, scaler = load_dataset('X', 20)
+    dataset, scaler = load_dataset('Xtrain.mat', 20)
     train_dataset, _, test_dataset = split_dataset(dataset)
 
     for key, model in models.items():
@@ -49,14 +59,9 @@ def test_mode():
             raise FileNotFoundError(file_path)
 
         models[key].load_state_dict(torch.load(file_path, weights_only=True))
-        test_model(model, train_dataset, scaler, model_name=key, plot_path=f"out/{key}/test-predictions.png")
+        test_model(model, test_dataset, scaler, model_name=key, plot_path=f"out/{key}/test-predictions.png")
 
 def predict_mode(n_steps=200):
-    models = {
-        "Felix": Net(),
-        "CNN-LSTM": HybridCNNLSTM(20, num_layers=2)
-    }
-
     dataset, scaler = load_dataset('Xtrain.mat', 20)
 
     for key, model in models.items():
@@ -67,7 +72,7 @@ def predict_mode(n_steps=200):
 
         model.load_state_dict(torch.load(file_path, weights_only=True))
         model.eval()
-        predict(model, dataset, scaler, n_steps, key)
+        predict(model, dataset, scaler, n_steps, key, plot_path=f"out/{key}/future-predictions.png")
 
 def main():
     parser = argparse.ArgumentParser()

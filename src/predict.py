@@ -2,7 +2,7 @@ import torch
 import matplotlib.pyplot as plt
 import numpy as np
 
-def predict(model, dataset, scaler, n_steps= 200, key=""):
+def predict(model, dataset, scaler, n_steps= 200, key="", plot_path = None):
     window = dataset.X[-1].clone().float()  # last known window, shape [window_size]
     predictions_scaled = []
 
@@ -24,4 +24,8 @@ def predict(model, dataset, scaler, n_steps= 200, key=""):
     plt.title(f"Recursive {n_steps}-step forecast")
     plt.legend()
     plt.tight_layout()
+
+    if plot_path:
+        plt.savefig(plot_path)
+
     plt.show()

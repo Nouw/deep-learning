@@ -22,8 +22,8 @@ def test_model(model: torch.nn.Module, test_loader, scaler, model_name="", plot_
     mae = mean_absolute_error(targets_original, predictions_original)
     mse = mean_squared_error(targets_original, predictions_original)
 
-    logging.info(f"Mean Absolute Error: {mae}")
-    logging.info(f"Mean Squared Error: {mse}")
+    logging.info(f"[{model_name}] Mean Absolute Error: {mae}")
+    logging.info(f"[{model_name}] Mean Squared Error: {mse}")
 
     time_steps = np.arange(len(predictions_original))
     plt.figure(figsize=(12, 5))
@@ -32,10 +32,13 @@ def test_model(model: torch.nn.Module, test_loader, scaler, model_name="", plot_
     plt.title(model_name)
     plt.legend()
     plt.tight_layout()
-    plt.show()
 
     if plot_path:
         plt.savefig(plot_path)
+
+    plt.show()
+
+
 
 def plot_predictions(model, data_scaled, data_original, scaler, window_size, model_name="Model"):
     all_predictions_scaled = []

@@ -12,7 +12,7 @@ class Net(nn.Module):
 
 
         self.globalpool = nn.AdaptiveAvgPool1d(1)
-        self.dropout = nn.Dropout1d(p=dropout_chance)
+        self.dropout = nn.Dropout(p=dropout_chance)
         self.fc = nn.Linear(filters,1)
 
         self.maxpool = nn.AdaptiveMaxPool1d(1)
@@ -24,8 +24,8 @@ class Net(nn.Module):
         x = self.dropout(F.relu(self.conv3(x)))
         x = self.dropout(F.relu(self.conv4(x)))
 
-        x = self.globalpool(x)
-        #x = self.maxpool(x)
+        #x = self.globalpool(x)
+        x = self.maxpool(x)
         x = x.squeeze(-1)
         x = self.fc(x)
 
