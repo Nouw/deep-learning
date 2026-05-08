@@ -21,7 +21,7 @@ def predict(model, dataset, scaler, n_steps= 200, key="", plot_path = None):
     plt.plot(predictions, color="tomato", linewidth=1.2, label=f"{key} — {n_steps}-step forecast")
     plt.xlabel("Steps ahead")
     plt.ylabel("Value")
-    plt.title(f"Recursive {n_steps}-step forecast")
+    plt.title(f"{key} - Recursive {n_steps}-step forecast")
     plt.legend()
     plt.tight_layout()
 

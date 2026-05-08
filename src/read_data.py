@@ -5,11 +5,11 @@ from src.dataset import LaserDataset
 from torch.utils.data import Subset, DataLoader
 import matplotlib.pyplot as plt
 
-def load_dataset(filename: str, window_size: int):
+def load_dataset(filename: str, window_size: int, key='Xtrain'):
     logging.debug(f'Loading {filename}')
 
     mat = scipy.io.loadmat(filename)
-    data = mat['Xtrain'].squeeze()
+    data = mat[key].squeeze()
 
     logging.debug(f'Loaded {filename}')
     logging.debug(f"Total number of data points: {len(data)}")

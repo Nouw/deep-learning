@@ -3,6 +3,8 @@ import argparse
 import logging
 import numpy as np
 import matplotlib.pyplot as plt
+from torch.utils.data import DataLoader
+
 from src.models.cnn_lstm import HybridCNNLSTM
 from src.models.lstm import LSTMNet
 from src.models.net import Net
@@ -43,14 +45,15 @@ def train_mode():
         if not os.path.exists(folder):
             os.mkdir(folder)
 
-        best_model = train_model(model, train_dataset, val_dataset, epochs=200, model_name=key, plot_loss=True, plot_path=f"{folder}/loss_graph.png")
+        best_model = train_model(model, train_dataset, val_dataset, epochs=100, model_name=key, plot_loss=True, plot_path=f"{folder}/loss_graph.png")
 
         torch.save(best_model, f"out/{key}/weights.pt")
 
 
 def test_mode():
-    dataset, scaler = load_dataset('Xtrain.mat', 20)
-    train_dataset, _, test_dataset = split_dataset(dataset)
+    dataset, scaler = load_dataset('Xtest.mat', 20, key="Xtest")
+    test_dataset = DataLoader(dataset, batch_size = 32, shuffle=False)
+    # _, _, test_dataset = split_dataset(dataset, train_size=0, val_size=0, test_size=1)
 
     for key, model in models.items():
         file_path = f"out/{key}/weights.pt"
