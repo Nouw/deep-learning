@@ -9,3 +9,7 @@ wheels/
 # Virtual environments
 .venv
 .idea
+
+# Data
+Final Project data.zip
+Final Project data
