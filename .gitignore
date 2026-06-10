@@ -13,3 +13,9 @@ wheels/
 # Data
 Final Project data.zip
 Final Project data
+
+data
+cache
+.DS_Store
+results
+trained_models
